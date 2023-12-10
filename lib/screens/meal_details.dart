@@ -16,13 +16,26 @@ class MealDetails extends ConsumerWidget {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {
-                final wasAdded=ref.read(favouritesMealProvider.notifier).mealToggleFavourite(meal);
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(wasAdded ? 'Meal added as favourite!' : 'Meal removed!')));
-              },
-              icon: const Icon(Icons.star)),
+            onPressed: () {
+              final wasAdded = ref
+                  .read(favouritesMealProvider.notifier)
+                  .mealToggleFavourite(meal);
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(wasAdded
+                      ? 'Meal added as favourite!'
+                      : 'Meal removed!')));
+            },
+            icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) {
+                  return RotationTransition(
+                    turns: animation,
+                    child: child,
+                  );
+                },
+                child: const Icon(Icons.star)),
+          )
         ],
         title: Text(
           meal.title,
@@ -33,11 +46,14 @@ class MealDetails extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Image.network(
-              meal.imageUrl,
-              width: double.infinity,
-              height: 300,
-              fit: BoxFit.cover,
+            Hero(
+              tag: meal.id,
+              child: Image.network(
+                meal.imageUrl,
+                width: double.infinity,
+                height: 300,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(
               height: 14,
